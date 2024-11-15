@@ -1,18 +1,32 @@
-import sqlite3
+import mysql.connector
 from tkinter import *
 from tkinter import messagebox
+from PIL import Image, ImageTk  # For handling images
 
 
-# Function to fetch system settings from the database
+# Function to fetch system settings from the MySQL database
 def fetch_system_settings():
     try:
-        conn = sqlite3.connect('config.db')  # Replace with your database path
+       
+        conn = mysql.connector.connect(
+            host="localhost",      
+            user="root",           
+            password="Daddy22@",   
+            database="internetbanking"   
+        )
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM iB_SystemSettings")
-        settings = cursor.fetchone()  # Assuming there's only one settings record
-        conn.close()
-        return settings
-    except sqlite3.Error as e:
+        
+        # Execute SQL query
+        cursor.execute("SELECT sys_name, sys_tagline FROM iB_SystemSettings WHERE id = 1")
+        settings = cursor.fetchone()  # Fetch the first row
+        
+        conn.close()  # Close the database connection
+        
+        if settings:
+            return settings
+        else:
+            return ("Default Name", "Default Tagline")
+    except mysql.connector.Error as e:
         messagebox.showerror("Database Error", f"An error occurred: {e}")
         return None
 
@@ -22,7 +36,7 @@ def refresh_ui():
     # Fetch the latest system settings from the database
     settings = fetch_system_settings()
     if settings:
-        sys_name, sys_tagline = settings[1], settings[2]  # Adjust index based on your database schema
+        sys_name, sys_tagline = settings[0], settings[1]  # Adjust index based on your database schema
     else:
         sys_name, sys_tagline = "System Name", "System Tagline"
     
@@ -39,10 +53,21 @@ root = Tk()
 root.title("System Interface")
 root.geometry("800x600")
 
+# Load background image
+# bg_image_path = r"C:\Users\gsaig\OneDrive\Documents\online-banking-new\dist\bg.png"  # Replace with your image path
+# bg_image = Image.open(bg_image_path)
+# bg_image = bg_image.resize((800, 600), Image.Resampling.LANCZOS)  # Updated attribute
+# bg_photo = ImageTk.PhotoImage(bg_image)
+
+#     # Display the image on a Canvas
+# canvas = Canvas(root, width=800, height=600)
+# canvas.pack(fill="both", expand=True)
+# canvas.create_image(0, 0, image=bg_photo, anchor="nw")
+
 # Fetch system settings for the first time
 settings = fetch_system_settings()
 if settings:
-    sys_name, sys_tagline = settings[1], settings[2]  # Adjust index based on your database schema
+    sys_name, sys_tagline = settings[0], settings[1]  # Adjust index based on your database schema
 else:
     sys_name, sys_tagline = "System Name", "System Tagline"
 
