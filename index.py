@@ -2,6 +2,7 @@ import mysql.connector
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk  # For handling images
+import subprocess
 
 
 # Function to fetch system settings from the MySQL database
@@ -79,6 +80,7 @@ Label(nav_frame, text=sys_name, fg="white", bg="#333", font=("Helvetica", 16, "b
 
 def open_admin_portal():
     messagebox.showinfo("Info", "Opening Admin Portal...")  # Replace with actual functionality
+    subprocess.Popen(['python', 'admin_index.py'])
 
 def open_staff_portal():
     messagebox.showinfo("Info", "Opening Staff Portal...")  # Replace with actual functionality
