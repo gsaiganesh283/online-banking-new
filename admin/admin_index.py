@@ -19,29 +19,20 @@ def login(event=None):
             database="internetbanking" 
         )
         cursor = conn.cursor()
-
-        # Execute the SQL query
         cursor.execute("SELECT email, password, admin_id FROM iB_admin WHERE email=%s AND password=%s", (email, hashed_password))
         result = cursor.fetchone()
 
         if result:
-            # If login is successful
             admin_id = result[2]
-            messagebox.showinfo("Login Success", "Welcome Admin")
-            # Save login details to a personal file
             with open("login_details.txt", "a") as file:
                 file.write(f"Email: {email}, Admin ID: {admin_id}\n")
-            # Navigate to the dashboard (additional code required)
         else:
-            # If login fails
             messagebox.showerror("Login Failed", "Access Denied. Please Check Your Credentials.")
 
         cursor.close()
         conn.close()
     except mysql.connector.Error as err:
         messagebox.showerror("Database Error", f"Error: {err}")
-
-# Function to toggle password visibility
 def toggle_password():
     if password_entry.cget('show') == '':
         password_entry.config(show='*')
@@ -49,8 +40,6 @@ def toggle_password():
     else:
         password_entry.config(show='')
         show_password_button.config(text='Hide Password')
-
-# Create the main window
 root = tk.Tk()
 root.title("Admin Login")
 root.geometry("800x600")  # Set the window size

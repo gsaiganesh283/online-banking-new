@@ -4,11 +4,9 @@ from tkinter import messagebox
 from PIL import Image, ImageTk  # For handling images
 import subprocess
 
-
 # Function to fetch system settings from the MySQL database
 def fetch_system_settings():
     try:
-       
         conn = mysql.connector.connect(
             host="localhost",      
             user="root",           
@@ -31,7 +29,6 @@ def fetch_system_settings():
         messagebox.showerror("Database Error", f"An error occurred: {e}")
         return None
 
-
 # Function to refresh the UI
 def refresh_ui():
     # Fetch the latest system settings from the database
@@ -42,12 +39,11 @@ def refresh_ui():
         sys_name, sys_tagline = "System Name", "System Tagline"
     
     # Update the labels dynamically
-    label_sys_name.config(text=sys_name)
-    label_sys_tagline.config(text=sys_tagline)
+    # label_sys_name.config(text=sys_name)
+    # label_sys_tagline.config(text=sys_tagline)
     
     # Schedule the refresh to occur every 5000 ms (5 seconds)
     root.after(5000, refresh_ui)
-
 
 # Initialize the main tkinter window
 root = Tk()
@@ -55,15 +51,25 @@ root.title("System Interface")
 root.geometry("800x600")
 
 # Load background image
-# bg_image_path = r"C:\Users\gsaig\OneDrive\Documents\online-banking-new\dist\bg.png"  # Replace with your image path
-# bg_image = Image.open(bg_image_path)
-# bg_image = bg_image.resize((800, 600), Image.Resampling.LANCZOS)  # Updated attribute
-# bg_photo = ImageTk.PhotoImage(bg_image)
+bg_image_path = r"C:\Users\gsaig\OneDrive\Documents\online-banking-new\dist\bg.png"  # Replace with your image path
+bg_image = Image.open(bg_image_path)
+bg_photo = ImageTk.PhotoImage(bg_image)
 
-#     # Display the image on a Canvas
-# canvas = Canvas(root, width=800, height=600)
-# canvas.pack(fill="both", expand=True)
-# canvas.create_image(0, 0, image=bg_photo, anchor="nw")
+# Display the image on a Canvas
+canvas = Canvas(root, width=800, height=600)
+canvas.pack(fill="both", expand=True)
+canvas.create_image(0, 0, image=bg_photo, anchor="nw")
+
+# Resize the background image to fit the window
+def resize_bg(event):
+    new_width = event.width
+    new_height = event.height
+    bg_image_resized = bg_image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    bg_photo_resized = ImageTk.PhotoImage(bg_image_resized)
+    canvas.create_image(0, 0, image=bg_photo_resized, anchor="nw")
+    canvas.image = bg_photo_resized  # Keep a reference to avoid garbage collection
+
+root.bind("<Configure>", resize_bg)
 
 # Fetch system settings for the first time
 settings = fetch_system_settings()
@@ -79,8 +85,7 @@ nav_frame.pack(fill=X)
 Label(nav_frame, text=sys_name, fg="white", bg="#333", font=("Helvetica", 16, "bold")).pack(side=LEFT, padx=10)
 
 def open_admin_portal():
-    messagebox.showinfo("Info", "Opening Admin Portal...")  # Replace with actual functionality
-    subprocess.Popen(['python', 'admin_index.py'])
+    subprocess.Popen(['python', 'C:\\Users\\gsaig\\OneDrive\\Documents\\online-banking-new\\admin\\admin_index.py'])
 
 def open_staff_portal():
     messagebox.showinfo("Info", "Opening Staff Portal...")  # Replace with actual functionality
@@ -88,22 +93,22 @@ def open_staff_portal():
 def open_client_portal():
     messagebox.showinfo("Info", "Opening Client Portal...")  # Replace with actual functionality
 
-Button(nav_frame, text="Join Us", bg="red", fg="white").pack(side=RIGHT, padx=10)
-Button(nav_frame, text="Admin Portal", bg="#555", fg="white", command=open_admin_portal).pack(side=RIGHT, padx=25)
-Button(nav_frame, text="Staff Portal", bg="#555", fg="white", command=open_staff_portal).pack(side=RIGHT, padx=20)
-Button(nav_frame, text="Client Portal", bg="#555", fg="white", command=open_client_portal).pack(side=RIGHT, padx=15)
+Button(nav_frame, text="Join Us", bg="red", fg="white", font=("Helvetica", 12, "bold")).pack(side=RIGHT, padx=10)
+Button(nav_frame, text="Admin Portal", bg="#555", fg="white", font=("Helvetica", 12, "bold"), command=open_admin_portal).pack(side=RIGHT, padx=25)
+Button(nav_frame, text="Staff Portal", bg="#555", fg="white", font=("Helvetica", 12, "bold"), command=open_staff_portal).pack(side=RIGHT, padx=20)
+Button(nav_frame, text="Client Portal", bg="#555", fg="white", font=("Helvetica", 12, "bold"), command=open_client_portal).pack(side=RIGHT, padx=15)
 
 # Intro Section
-intro_frame = Frame(root, bg="#eee", height=400)
-intro_frame.pack(fill=BOTH, expand=True, padx=10, pady=10)
+# intro_frame = Frame(canvas, bg="#eee", height=400)
+# intro_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-label_sys_name = Label(intro_frame, text=sys_name, font=("Helvetica", 24, "bold"), bg="#eee")
-label_sys_name.pack(pady=20)
+# label_sys_name = Label(intro_frame, text=sys_name, font=("Helvetica", 24, "bold"), bg="#eee")
+# label_sys_name.pack(pady=20)
 
-label_sys_tagline = Label(intro_frame, text=sys_tagline, font=("Helvetica", 16), bg="#eee")
-label_sys_tagline.pack(pady=10)
+# label_sys_tagline = Label(intro_frame, text=sys_tagline, font=("Helvetica", 16), bg="#eee")
+# label_sys_tagline.pack(pady=10)
 
-Button(intro_frame, text="Get Started", bg="green", fg="white").pack(pady=20)
+# Button(intro_frame, text="Get Started", bg="green", fg="white", font=("Helvetica", 14, "bold")).pack(pady=20)
 
 # Start the periodic refresh process
 refresh_ui()
